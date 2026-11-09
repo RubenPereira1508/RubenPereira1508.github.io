@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rúben Correia Pereira</title>
+<meta name="description" content="Rúben Correia Pereira, cloud and data engineer from Vila Real. Terraform, AWS, GCP, OpenStack, Airflow, dbt and distributed systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Plan: deep ink background with a slow teal-and-coral aurora, glass cards that light up under the cursor.
+   Display type is Sora, large and tight. One gradient (teal to coral) is the only decoration; everything else is quiet. */
+:root{
+  --bg:#070a11;
+  --bg-2:#0c1220;
+  --card:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.10);
+  --text:#eef3fa;
+  --mute:#98a6bb;
+  --a:#2ee6c5;
+  --b:#ff8a5b;
+  --grad:linear-gradient(100deg,#2ee6c5 0%,#7fd6ff 45%,#ff8a5b 100%);
+  --f-display:"Sora","Helvetica Neue",Arial,sans-serif;
+  --f-body:"DM Sans","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1.02rem/1.65 var(--f-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.aurora i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;will-change:transform}
+.aurora i:nth-child(1){width:46vw;height:46vw;left:-8vw;top:-14vw;background:radial-gradient(circle,#0f7f78,transparent 70%);animation:d1 26s ease-in-out infinite alternate}
+.aurora i:nth-child(2){width:40vw;height:40vw;right:-10vw;top:12vh;background:radial-gradient(circle,#a04a2a,transparent 70%);opacity:.34;animation:d2 32s ease-in-out infinite alternate}
+.aurora i:nth-child(3){width:52vw;height:52vw;left:25vw;bottom:-26vw;background:radial-gradient(circle,#173e80,transparent 70%);opacity:.45;animation:d1 38s ease-in-out infinite alternate-reverse}
+@keyframes d1{to{transform:translate(8vw,6vw) scale(1.12)}}
+@keyframes d2{to{transform:translate(-9vw,10vh) scale(.92)}}
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(#000,transparent 70%)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--a);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.02em}
+.mono{font-family:var(--f-mono);font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(7,10,17,.62);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700}
+.brand b{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--grad);color:#05110f;font-size:.82rem}
+.nav nav{display:flex;align-items:center;gap:6px}
+.nav nav a{padding:8px 12px;border-radius:999px;color:var(--mute);font-size:.92rem;transition:color .2s,background .2s}
+.nav nav a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.lang{font-family:var(--f-mono);font-size:.76rem;color:var(--text);background:transparent;border:1px solid var(--line);border-radius:999px;padding:7px 12px;cursor:pointer;margin-left:6px}
+.lang:hover{border-color:var(--a)}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:12px 22px;font-weight:600;font-size:.95rem;border:1px solid var(--line);transition:transform .2s,box-shadow .2s,border-color .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--grad);color:#05110f;border:0;box-shadow:0 10px 40px -12px rgba(46,230,197,.55)}
+.btn.primary:hover{box-shadow:0 14px 44px -10px rgba(255,138,91,.6)}
+.btn.ghost:hover{border-color:var(--a)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:80px 0 56px}
+.pill{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 14px;font-size:.86rem;color:var(--mute)}
+.pill i{width:8px;height:8px;border-radius:50%;background:var(--a);box-shadow:0 0 0 0 rgba(46,230,197,.7);animation:ping 2.4s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 9px rgba(46,230,197,0)}100%{box-shadow:0 0 0 0 rgba(46,230,197,0)}}
+.hero h1{font-size:clamp(2.7rem,6.6vw,5rem);line-height:1.02;font-weight:800;margin:22px 0 0}
+.hero .role{font-family:var(--f-display);font-weight:600;font-size:clamp(1.1rem,2.2vw,1.45rem);margin-top:16px;color:var(--text)}
+.hero .lede{max-width:54ch;color:var(--mute);margin:18px 0 0}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.net{position:relative;border:1px solid var(--line);border-radius:28px;background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));padding:14px;box-shadow:0 30px 80px -40px rgba(46,230,197,.35)}
+.net canvas{width:100%;aspect-ratio:1/1;display:block}
+.net .mono{display:block;padding:6px 8px 4px;text-transform:none;letter-spacing:.01em}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:22px;background:var(--card);overflow:hidden}
+.stat{padding:22px 24px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat b{display:block;font-family:var(--f-display);font-size:clamp(1.7rem,3.4vw,2.4rem);font-weight:700;line-height:1.1}
+.stat span{color:var(--mute);font-size:.88rem}
+
+/* sections */
+section{padding:84px 0 0}
+.sh{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:30px}
+.sh h2{font-size:clamp(1.9rem,4vw,2.9rem);font-weight:700}
+.sh p{margin:8px 0 0;color:var(--mute);max-width:52ch}
+
+/* cards */
+.card{position:relative;border:1px solid var(--line);border-radius:22px;background:var(--card);padding:26px;overflow:hidden;transition:border-color .25s,transform .25s}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(46,230,197,.13),transparent 45%);opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover{border-color:rgba(46,230,197,.4);transform:translateY(-3px)}
+.card:hover::before{opacity:1}
+.card[hidden]{display:none}
+.card>*{position:relative}
+.card h3{font-size:1.32rem;font-weight:700}
+.card p{margin:0;color:var(--mute)}
+.card .top{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.tag{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:4px 10px;border:1px solid var(--line);color:var(--mute);white-space:nowrap}
+.tag.cloud{color:var(--a);border-color:rgba(46,230,197,.35)}
+.tag.data{color:#7fd6ff;border-color:rgba(127,214,255,.35)}
+.tag.app{color:var(--b);border-color:rgba(255,138,91,.35)}
+.stack{display:grid;gap:14px}
+ul.pts{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+ul.pts li{position:relative;padding-left:20px;color:#c5cfde;font-size:.95rem;line-height:1.55}
+ul.pts li::before{content:"";position:absolute;left:2px;top:.62em;width:7px;height:7px;border-radius:2px;background:var(--grad)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.chips li{font-family:var(--f-mono);font-size:.72rem;padding:4px 9px;border-radius:8px;background:rgba(255,255,255,.06);color:#d8e1ee}
+.links{display:flex;gap:18px;flex-wrap:wrap;font-weight:600;font-size:.92rem}
+.links a{color:var(--a)}
+.links a:hover{color:var(--b)}
+.privnote{font-family:var(--f-mono);font-weight:400;font-size:.72rem;color:var(--mute);letter-spacing:.01em}
+
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.feat .card{padding:28px;display:flex;flex-direction:column;gap:16px}
+.feat .card .links{margin-top:auto}
+.diagram{border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.28);padding:16px;display:grid;gap:10px;font-family:var(--f-mono);font-size:.72rem}
+.dg-row{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap}
+.node{flex:1 1 90px;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:rgba(255,255,255,.05);color:#dbe4f1;line-height:1.35}
+.node small{display:block;color:var(--mute);font-size:.66rem;margin-top:2px}
+.node.hot{border-color:rgba(46,230,197,.5);background:rgba(46,230,197,.08)}
+.node.warm{border-color:rgba(255,138,91,.5);background:rgba(255,138,91,.08)}
+.arrow{align-self:center;color:var(--mute)}
+.bar{border:1px dashed rgba(127,214,255,.45);border-radius:10px;padding:7px 10px;color:#7fd6ff;text-align:center}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filters button{font-family:var(--f-body);font-weight:500;font-size:.88rem;background:transparent;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer;transition:all .2s}
+.filters button:hover{color:var(--text)}
+.filters button[aria-pressed="true"]{background:var(--text);color:#07090f;border-color:var(--text)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid .card{display:flex;flex-direction:column;gap:14px}
+.grid .card .links{margin-top:auto}
+
+.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.lane h3{font-size:1.1rem;margin-bottom:14px}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tl{display:grid;gap:0}
+.tl div{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.tl div:last-child{border-bottom:0}
+.tl .mono{padding-top:3px}
+
+.cta-card{text-align:center;padding:56px 24px;border-radius:30px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(46,230,197,.10),rgba(255,138,91,.08) 70%),var(--card)}
+.cta-card h2{font-size:clamp(2rem,4.6vw,3.4rem);font-weight:800;max-width:18ch;margin:0 auto}
+.cta-card p{color:var(--mute);max-width:52ch;margin:16px auto 0}
+.cta-card .mail{display:block;font-family:var(--f-display);font-weight:700;font-size:clamp(1.15rem,3vw,1.7rem);margin:26px 0 24px;word-break:break-word}
+.cta-card .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+footer{padding:40px 0 56px;text-align:center}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:44px}
+  .feat,.grid,.lanes,.two{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat:nth-child(2){border-right:0}
+  .stat:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .nav nav a.opt{display:none}
+  .tl div{grid-template-columns:1fr;gap:2px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .aurora i,.pill i{animation:none}
+  .card,.btn{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="nav"><div class="wrap">
+  <a class="brand" href="#top" aria-label="Rúben Correia Pereira"><b>RC</b><span>Rúben Correia</span></a>
+  <nav>
+    <a class="opt" href="#work" data-i="nav_work">Work</a>
+    <a class="opt" href="#projects" data-i="nav_projects">Projects</a>
+    <a class="opt" href="#skills" data-i="nav_skills">Skills</a>
+    <a href="#contact" data-i="nav_contact">Contact</a>
+    <button class="lang" id="lang" type="button" aria-label="Mudar idioma / Change language">PT / EN</button>
+  </nav>
+</div></div>
+
+<main id="top">
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <span class="pill"><i></i><span data-i="avail">Open to cloud and data roles</span></span>
+      <h1>Rúben<br><span class="grad">Correia Pereira</span></h1>
+      <p class="role" data-i="role">Cloud and data engineer · Vila Real, Portugal</p>
+      <p class="lede" data-i="lede"></p>
+      <div class="cta">
+        <a class="btn primary" href="#work" data-i="cta1">See my work</a>
+        <a class="btn ghost" href="https://github.com/RubenPereira1508" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn ghost" href="https://www.linkedin.com/in/ruben-correia-2737052a6" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </div>
+    <figure class="net" style="margin:0">
+      <canvas id="net" aria-label="Animation of a lookup hopping across 32 peers on a ring"></canvas>
+      <span class="mono" data-i="netcap">A lookup across 32 peers resolves in at most 5 hops.</span>
+    </figure>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b class="grad">11</b><span data-i="s1">projects</span></div>
+    <div class="stat"><b class="grad">44</b><span data-i="s2">engine tests passing (AND-1)</span></div>
+    <div class="stat"><b class="grad">11/11</b><span data-i="s3">dbt data tests passing</span></div>
+    <div class="stat"><b class="grad">0.889</b><span data-i="s4">R² of the rating model</span></div>
+  </div>
+</div>
+
+<section id="work"><div class="wrap">
+  <div class="sh"><div><h2 data-i="work_h">Featured work</h2><p data-i="work_p">Two projects built end to end: one for infrastructure, one for data.</p></div></div>
+  <div class="feat" id="feat"></div>
+</div></section>
+
+<section id="projects"><div class="wrap">
+  <div class="sh"><div><h2 data-i="proj_h">More projects</h2><p data-i="proj_p">Games, models, distributed systems and earlier cloud work.</p></div><div class="filters" id="filters" role="group" aria-label="Filter"></div></div>
+  <div class="grid" id="grid"></div>
+</div></section>
+
+<section id="skills"><div class="wrap">
+  <div class="sh"><div><h2 data-i="skills_h">What I work with</h2></div></div>
+  <div class="lanes">
+    <div class="card lane"><h3 data-i="lane_cloud">Cloud and infrastructure</h3>
+      <ul class="chips"><li>GCP</li><li>AWS</li><li>OpenStack</li><li>Terraform</li><li>Docker</li><li>Linux / Bash</li><li>VPC / DNS</li><li>IAM</li><li>GitHub Actions</li></ul></div>
+    <div class="card lane"><h3 data-i="lane_data">Data</h3>
+      <ul class="chips"><li>Python</li><li>SQL</li><li>PostgreSQL</li><li>Airflow</li><li>dbt</li><li>ETL</li><li>Data modeling</li><li>Power BI</li></ul></div>
+    <div class="card lane"><h3 data-i="lane_sys">Systems and software</h3>
+      <ul class="chips"><li>Java</li><li>C / C++</li><li>TypeScript</li><li>React</li><li>Next.js</li><li>FastAPI</li><li>Distributed systems</li><li>Git</li></ul></div>
+  </div>
+</div></section>
+
+<section><div class="wrap two">
+  <div class="card">
+    <h3 data-i="edu_h" style="margin-bottom:6px">Education</h3>
+    <div class="tl">
+      <div><span class="mono" data-i="edu1_d">In progress</span><span data-i="edu1"></span></div>
+      <div><span class="mono" data-i="edu2_d">Concluded</span><span data-i="edu2"></span></div>
+      <div><span class="mono">2024 – 2025</span><span data-i="edu3"></span></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 data-i="ex_h" style="margin-bottom:6px">Beyond the degree</h3>
+    <div class="tl">
+      <div><span class="mono">2026</span><span data-i="ex1"></span></div>
+      <div><span class="mono">EBEC Porto</span><span data-i="ex2"></span></div>
+      <div><span class="mono">AEFCUP</span><span data-i="ex3"></span></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="contact"><div class="wrap">
+  <div class="cta-card">
+    <h2 data-i="ct_h">Let’s build something reliable.</h2>
+    <p data-i="ct_p"></p>
+    <span class="mail">rubencorreia1508@gmail.com</span>
+    <div class="row">
+      <a class="btn primary" href="mailto:rubencorreia1508@gmail.com" data-i="ct_mail">Write an email</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/ruben-correia-2737052a6" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="btn ghost" href="https://github.com/RubenPereira1508" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</div></section>
+</main>
+
+<footer><span class="mono">Rúben Correia Pereira · Vila Real, Portugal</span></footer>
+
+<script>
+const T = {
+  en: {
+    nav_projects:"Projects", nav_skills:"Skills", nav_contact:"Contact",
+    role:"Cloud and data engineer · Vila Real, Portugal",
+    h1:"Infrastructure and data pipelines you can <em>rerun</em> safely.",
+    lede:"I am finishing an M.Sc. in Network and Computer Systems Engineering at FCUP, after a B.Sc. in Informatics Engineering at FEUP. I have designed and run private (OpenStack) and public (GCP) clouds, containerised workloads with Docker, and automated infrastructure with Terraform, Linux, Bash and Python.",
+    netcap:"A lookup across 32 peers resolves in at most 5 hops.",
+    skills_h:"What I work with", skills_sub:"from the CV",
+    lane_cloud:"Cloud and infrastructure", lane_data:"Data", lane_sys:"Systems and software",
+    proj_h:"Projects",
+    f_all:"All", f_cloud:"Cloud", f_data:"Data", f_app:"Software",
+    edu_h:"Education", edu1_d:"In progress", edu2_d:"Concluded",
+    edu1:"M.Sc. in Network and Computer Systems Engineering, FCUP, University of Porto",
+    edu2:"B.Sc. in Informatics Engineering, FEUP, University of Porto",
+    edu3:"Erasmus+ academic mobility, Politechnika Krakowska, Poland",
+    ex_h:"Beyond the degree",
+    ex1:"Hackathon “Solve & Conquer” at UTAD: engineering and algorithmic challenges under tight deadlines.",
+    ex2:"24-hour team competition: designed and deployed engineering solutions.",
+    ex3:"Active member of the FCUP Students’ Association.",
+    ct_h:"Contact",
+    ct_p:"Open to cloud, infrastructure and data engineering roles and internships. The quickest way to reach me is email.",
+    ct_mail:"Write an email",
+    live:"Live site", code:"Code"
+  },
+  pt: {
+    nav_projects:"Projetos", nav_skills:"Competências", nav_contact:"Contacto",
+    role:"Engenheiro de cloud e dados · Vila Real, Portugal",
+    h1:"Infraestrutura e pipelines de dados que se podem <em>repetir</em> sem medo.",
+    lede:"Estou a concluir o mestrado em Engenharia de Redes e Sistemas Informáticos na FCUP, depois da licenciatura em Engenharia Informática na FEUP. Desenhei e operei clouds privadas (OpenStack) e públicas (GCP), containerizei serviços com Docker e automatizei infraestrutura com Terraform, Linux, Bash e Python.",
+    netcap:"Uma pesquisa entre 32 nós resolve-se em, no máximo, 5 saltos.",
+    skills_h:"Com o que trabalho", skills_sub:"do CV",
+    lane_cloud:"Cloud e infraestrutura", lane_data:"Dados", lane_sys:"Sistemas e software",
+    proj_h:"Projetos",
+    f_all:"Todos", f_cloud:"Cloud", f_data:"Dados", f_app:"Software",
+    edu_h:"Formação", edu1_d:"Em curso", edu2_d:"Concluída",
+    edu1:"Mestrado em Engenharia de Redes e Sistemas Informáticos, FCUP, Universidade do Porto",
+    edu2:"Licenciatura em Engenharia Informática, FEUP, Universidade do Porto",
+    edu3:"Mobilidade Erasmus+, Politechnika Krakowska, Polónia",
+    ex_h:"Para além do curso",
+    ex1:"Hackathon “Solve & Conquer” na UTAD: desafios de engenharia e algoritmia com prazos apertados.",
+    ex2:"Competição de equipa de 24 horas: desenhar e implementar soluções de engenharia.",
+    ex3:"Membro ativo da Associação de Estudantes da FCUP.",
+    ct_h:"Contacto",
+    ct_p:"Disponível para funções e estágios em cloud, infraestrutura e engenharia de dados. O contacto mais rápido é por email.",
+    ct_mail:"Escrever um email",
+    live:"Site ao vivo", code:"Código"
+  }
+};
+
+/* url: null means no public link yet, so no button is shown. */
+const P = [
+ { lane:"cloud", stack:["Terraform","AWS","Docker","GitHub Actions","LocalStack","FastAPI"], url:null, repo:null,
+   en:{ t:"Cloud Notes API", d:"A small notes API deployed the way a cloud team would: infrastructure as code, a container image and a pipeline that proves the stack provisions on every push.",
+     b:["Terraform defines a VPC with public and private subnets, EC2, RDS, S3 and security groups. The database only accepts traffic from the app's security group.","One switch (use_localstack) points the same code at LocalStack or real AWS, so the whole stack is applied and destroyed in CI at zero cost.","GitHub Actions runs tests, builds and pushes the image, then runs fmt, validate, plan, apply and destroy."] },
+   pt:{ t:"Cloud Notes API", d:"Uma API de notas pequena, implantada como uma equipa de cloud o faria: infraestrutura como código, imagem de contentor e uma pipeline que prova que a stack se provisiona a cada push.",
+     b:["O Terraform define uma VPC com sub-redes públicas e privadas, EC2, RDS, S3 e security groups. A base de dados só aceita tráfego do security group da aplicação.","Uma variável (use_localstack) aponta o mesmo código para o LocalStack ou para a AWS real, por isso a stack é aplicada e destruída no CI sem custos.","O GitHub Actions corre testes, constrói e publica a imagem, e depois corre fmt, validate, plan, apply e destroy."] } },
+ { lane:"data", stack:["Python","Airflow","dbt","PostgreSQL","Docker","Power BI"], url:null, repo:null,
+   en:{ t:"Crypto ELT Pipeline", d:"An end-to-end ELT pipeline over the CoinGecko top-100: raw snapshots, a Postgres warehouse, dbt models and a daily Airflow schedule feeding Power BI.",
+     b:["The loader tracks every file in a control table, so reruns never duplicate a snapshot and history accumulates.","dbt builds a staging view and two marts (growth with moving averages, and a per-snapshot leaderboard); all 11 data tests pass.","Airflow runs extract, load, dbt run and dbt test in a separate virtualenv so dependencies never clash with Airflow's own."] },
+   pt:{ t:"Pipeline ELT de Cripto", d:"Uma pipeline ELT de ponta a ponta sobre o top 100 da CoinGecko: snapshots em bruto, um warehouse em Postgres, modelos dbt e um agendamento diário no Airflow que alimenta o Power BI.",
+     b:["O loader regista cada ficheiro numa tabela de controlo, por isso reexecuções nunca duplicam um snapshot e o histórico acumula.","O dbt constrói uma view de staging e dois marts (crescimento com médias móveis e um leaderboard por snapshot); os 11 testes de dados passam.","O Airflow corre extract, load, dbt run e dbt test num virtualenv separado, para as dependências não colidirem com as do próprio Airflow."] } },
+ { lane:"data", stack:["Python","SQL","Docker","ETL","Data modeling","Power BI"], url:null, repo:null,
+   en:{ t:"Weather ETL and Data Warehouse", d:"An automated ETL pipeline that ingests, cleans, validates and loads time-series weather data into a relational warehouse.",
+     b:["Containerised with Docker for reproducible batch runs.","Analytical schemas feed Power BI dashboards."] },
+   pt:{ t:"ETL Meteorológico e Data Warehouse", d:"Uma pipeline ETL automatizada que ingere, limpa, valida e carrega séries temporais meteorológicas num warehouse relacional.",
+     b:["Containerizada com Docker para execuções em lote reprodutíveis.","Os esquemas analíticos alimentam dashboards no Power BI."] } },
+ { lane:"app", stack:["Next.js 16","React 19","TypeScript","Supabase","Vercel"], url:"https://and-1-sable.vercel.app", repo:null,
+   en:{ t:"AND-1", d:"A live NBA draft game for 2 to 8 friends: everyone rolls their own real team-season, drafts ten players in 35-second rounds, then the teams meet in a random 16-team playoff bracket.",
+     b:["A deterministic, seeded TypeScript engine means every browser computes the same lineups, bracket and scores from the picks stored on the server; its 44 tests pass.","Ratings come from era-adjusted stats over 1,314 real team-seasons; the lineup-to-net-rating regression fits with R² 0.889.","Postgres functions are the only way to write, so exclusivity and round rules are enforced by database constraints."] },
+   pt:{ t:"AND-1", d:"Um jogo de draft da NBA ao vivo para 2 a 8 amigos: cada um lança a sua equipa-época real, escolhe dez jogadores em rondas de 35 segundos e as equipas defrontam-se num quadro de playoffs de 16 equipas sorteado.",
+     b:["Um motor em TypeScript, determinístico e com sementes, faz com que todos os browsers calculem as mesmas equipas, quadro e resultados a partir das escolhas guardadas no servidor; os 44 testes passam.","As classificações vêm de estatísticas ajustadas por época sobre 1 314 equipas-época reais; a regressão equipa-para-net-rating tem R² de 0,889.","Funções Postgres são a única forma de escrever, por isso a exclusividade e as regras de ronda são garantidas por constraints da base de dados."] } },
+ { lane:"app", stack:["React 19","TypeScript","Pixi.js","Three.js","Zustand","Vitest"], url:null, repo:"https://github.com/RubenPereira1508/NBAM",
+   en:{ t:"NBAM, NBA Manager", d:"A Football Manager style game for the NBA, built on real data: tactics, a live 2D match, 3D highlights, a season with injuries, the draft, contracts under a salary cap, trades and free agency.",
+     b:["A pure, seedable simulation engine, tuned against real league averages; simulated player points, rebounds and assists correlate 0.96, 0.95 and 0.91 with the real ones.","Career saves in the browser, an 82-game calendar, play-in and best-of-seven playoffs.","The 3D highlights are directed from engine events, and the game stays playable offline."] },
+   pt:{ t:"NBAM, NBA Manager", d:"Um jogo ao estilo Football Manager para a NBA, com dados reais: táticas, jogo 2D em direto, destaques em 3D, uma época com lesões, draft, contratos com teto salarial, trocas e agentes livres.",
+     b:["Um motor de simulação puro e com sementes, afinado com médias reais da liga; pontos, ressaltos e assistências simulados correlacionam 0,96, 0,95 e 0,91 com os reais.","Carreira guardada no browser, calendário de 82 jogos, play-in e playoffs à melhor de sete.","Os destaques em 3D são realizados a partir dos eventos do motor, e o jogo funciona offline."] } },
+ { lane:"app", stack:["Python","FastAPI","scikit-learn","React","Supabase","Render"], url:null, repo:null,
+   en:{ t:"ProjBetsAI", d:"A football and tennis prediction app installable as a phone app. Football blends Poisson, Dixon-Coles, Elo and a random forest; tennis adds a logistic model over Elo.",
+     b:["Backtests on a full season (2,039 matches, each predicted only from the past) cut 1X2 log-loss from 1.0030 to 0.9901.","On out-of-sample ATP matches the model reaches 65.0% accuracy against 63.8% for Elo alone and 67.6% for bookmakers; the README says so plainly.","FastAPI on Render, a React PWA on Vercel, shared team notes in Supabase."] },
+   pt:{ t:"ProjBetsAI", d:"Uma app de previsões de futebol e ténis, instalável no telemóvel. O futebol combina Poisson, Dixon-Coles, Elo e uma random forest; o ténis acrescenta um modelo logístico sobre o Elo.",
+     b:["Backtests numa época inteira (2 039 jogos, cada um previsto só com o passado) reduziram o log-loss 1X2 de 1,0030 para 0,9901.","Em jogos ATP fora da amostra o modelo acerta 65,0%, contra 63,8% só com Elo e 67,6% das casas de apostas; o README diz-o claramente.","FastAPI no Render, PWA em React no Vercel, notas partilhadas da equipa no Supabase."] } },
+ { lane:"cloud", stack:["OpenStack","Eucalyptus","Linux / Bash","Docker","Cloud networking"], url:null, repo:null,
+   en:{ t:"Private Cloud Infrastructure Platform", d:"A private cloud on OpenStack with automated provisioning, elastic compute, dynamic storage and container orchestration.",
+     b:["Cloud networking, identity management (Keystone) and access-control policies.","Tuned for SLA compliance and resource efficiency."] },
+   pt:{ t:"Plataforma de Cloud Privada", d:"Uma cloud privada em OpenStack com provisionamento automatizado, computação elástica, armazenamento dinâmico e orquestração de contentores.",
+     b:["Redes cloud, gestão de identidade (Keystone) e políticas de controlo de acesso.","Otimizada para cumprimento de SLA e eficiência de recursos."] } },
+ { lane:"cloud", stack:["GCP","App Engine","Cloud Functions","Cloud Storage","IAM","Python","SQL"], url:null, repo:null,
+   en:{ t:"Healthcare Cloud Backend", d:"A scalable, highly available Google Cloud backend to process and store critical medical workloads.",
+     b:["Serverless functions, structured Cloud Storage and tightly scoped IAM roles.","Automated operational tasks."] },
+   pt:{ t:"Backend Cloud para Saúde", d:"Um backend escalável e de alta disponibilidade na Google Cloud para processar e guardar cargas médicas críticas.",
+     b:["Funções serverless, Cloud Storage estruturado e papéis IAM com permissões restritas.","Tarefas operacionais automatizadas."] } },
+ { lane:"app", stack:["Java","S/Kademlia","Distributed systems","Network security"], url:null, repo:null,
+   en:{ t:"Resilient P2P Network", d:"A fault-tolerant, decentralised peer-to-peer network in Java with custom consensus and resistance to Sybil attacks through S/Kademlia.",
+     b:["Analysed routing, packet flow, latency and the consistency of distributed nodes."] },
+   pt:{ t:"Rede P2P Resiliente", d:"Uma rede peer-to-peer descentralizada e tolerante a falhas em Java, com consenso próprio e resistência a ataques Sybil através de S/Kademlia.",
+     b:["Análise de encaminhamento, fluxo de pacotes, latência e consistência de nós distribuídos."] } },
+ { lane:"app", stack:["Three.js","JavaScript","WebGL","PT / EN"], url:null, repo:null,
+   en:{ t:"Tradicional e Petiscos", d:"A website concept for a restaurant in Vila Real: you stand at the door of a 3D room and click the bar to book, the tables for the menu and the kitchen for the house dishes.",
+     b:["Built with Three.js; opening hours and holiday closures are computed in Lisbon time.","Bookings are emailed to the restaurant, in Portuguese and English."] },
+   pt:{ t:"Tradicional e Petiscos", d:"Um conceito de website para um restaurante em Vila Real: está-se à porta de uma sala 3D e clica-se no balcão para reservar, nas mesas para a ementa e na cozinha para os pratos da casa.",
+     b:["Feito com Three.js; horário e encerramentos de férias calculados na hora de Lisboa.","As reservas seguem por email para o restaurante, em português e inglês."] } },
+ { lane:"app", stack:["Next.js","Supabase","PWA","Tailwind"], url:null, repo:null,
+   en:{ t:"Betting Tracker", d:"A phone app for two people to log bets, track bankroll, profit and hit rate per bookmaker, and export to Excel, replacing a shared spreadsheet.",
+     b:["Server-rendered Next.js pages over Supabase, installable as a PWA."] },
+   pt:{ t:"Registo de Apostas", d:"Uma app de telemóvel para duas pessoas registarem apostas e acompanharem banca, lucro e taxa de acerto por casa, com exportação para Excel, a substituir uma folha de cálculo partilhada.",
+     b:["Páginas Next.js renderizadas no servidor sobre Supabase, instalável como PWA."] } }
+];
+
+
+Object.assign(T.en, {
+  nav_work:"Work", avail:"Open to cloud and data roles", cta1:"See my work",
+  s1:"projects", s2:"engine tests passing (AND-1)", s3:"dbt data tests passing", s4:"R² of the rating model",
+  work_h:"Featured work", work_p:"Two projects built end to end: one for infrastructure, one for data.",
+  proj_h:"More projects", proj_p:"Games, models, distributed systems and earlier cloud work.",
+  ct_h:"Let’s build something reliable.", priv:"Private repository, code available on request",
+  d_vpc:"VPC 10.0.0.0/16", d_pub:"Public subnets", d_priv:"Private subnets", d_app:"EC2 + FastAPI", d_db:"RDS PostgreSQL", d_dbn:"5432 from the app's security group only",
+  d_s3:"S3 attachments", d_s3n:"private, encrypted, versioned", d_ci:"GitHub Actions: test → build image → fmt, validate, plan, apply, destroy on LocalStack",
+  d_src:"CoinGecko API", d_raw:"Raw JSON", d_rawn:"immutable snapshots", d_pg:"PostgreSQL", d_pgn:"control table", d_dbt:"dbt", d_dbtn:"staging → 2 marts", d_bi:"Power BI", d_air:"Airflow @daily: extract → load → dbt run → dbt test"
+});
+Object.assign(T.pt, {
+  nav_work:"Trabalho", avail:"Disponível para funções de cloud e dados", cta1:"Ver o meu trabalho",
+  s1:"projetos", s2:"testes do motor a passar (AND-1)", s3:"testes dbt a passar", s4:"R² do modelo de classificações",
+  work_h:"Trabalho em destaque", work_p:"Dois projetos feitos de ponta a ponta: um de infraestrutura, outro de dados.",
+  proj_h:"Mais projetos", proj_p:"Jogos, modelos, sistemas distribuídos e trabalho anterior em cloud.",
+  ct_h:"Vamos construir algo fiável.", priv:"Repositório privado, código disponível a pedido",
+  d_vpc:"VPC 10.0.0.0/16", d_pub:"Sub-redes públicas", d_priv:"Sub-redes privadas", d_app:"EC2 + FastAPI", d_db:"RDS PostgreSQL", d_dbn:"5432 só a partir do security group da app",
+  d_s3:"Anexos em S3", d_s3n:"privado, encriptado, com versões", d_ci:"GitHub Actions: testes → imagem → fmt, validate, plan, apply, destroy no LocalStack",
+  d_src:"API CoinGecko", d_raw:"JSON em bruto", d_rawn:"snapshots imutáveis", d_pg:"PostgreSQL", d_pgn:"tabela de controlo", d_dbt:"dbt", d_dbtn:"staging → 2 marts", d_bi:"Power BI", d_air:"Airflow @diário: extract → load → dbt run → dbt test"
+});
+
+/* Only the Crypto ELT repo (P[1]) is public. Put its URL in DATAENG_REPO to show the Code button. */
+const DATAENG_REPO = "https://github.com/RubenPereira1508/DataEngineerProj";
+P.forEach((p, i) => { p.priv = i !== 1; if (i !== 1) p.repo = null; });
+P[1].repo = DATAENG_REPO;
+let lang = "en", filter = "all";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const tagName = () => ({ cloud:T[lang].f_cloud, data:T[lang].f_data, app:T[lang].f_app });
+
+function diagram(i) {
+  const t = T[lang];
+  if (i === 0) return `<div class="diagram" aria-hidden="true">
+    <div class="node hot">${t.d_vpc}
+      <div class="dg-row" style="margin-top:8px">
+        <div class="node">${t.d_pub}<small>${t.d_app}</small></div><span class="arrow">→</span>
+        <div class="node warm">${t.d_priv}<small>${t.d_db}</small></div>
+      </div>
+      <small style="display:block;margin-top:6px;color:var(--mute)">${t.d_dbn}</small>
+    </div>
+    <div class="node">${t.d_s3}<small>${t.d_s3n}</small></div>
+    <div class="bar">${t.d_ci}</div></div>`;
+  return `<div class="diagram" aria-hidden="true">
+    <div class="dg-row">
+      <div class="node">${t.d_src}</div><span class="arrow">→</span>
+      <div class="node">${t.d_raw}<small>${t.d_rawn}</small></div><span class="arrow">→</span>
+      <div class="node warm">${t.d_pg}<small>${t.d_pgn}</small></div>
+    </div>
+    <div class="dg-row">
+      <div class="node hot">${t.d_dbt}<small>${t.d_dbtn}</small></div><span class="arrow">→</span>
+      <div class="node">${t.d_bi}</div>
+    </div>
+    <div class="bar">${t.d_air}</div></div>`;
+}
+function cardHTML(p, i, featured) {
+  const t = T[lang], c = p[lang];
+  const links = [
+    p.url ? `<a href="${p.url}" target="_blank" rel="noopener">${t.live} ↗</a>` : "",
+    p.repo ? `<a href="${p.repo}" target="_blank" rel="noopener">${t.code} ↗</a>` : ""
+  ].join("");
+  return `<article class="card" data-lane="${p.lane}">
+    <div class="top"><h3>${esc(c.t)}</h3><span class="tag ${p.lane}">${tagName()[p.lane]}</span></div>
+    ${featured ? diagram(i) : ""}
+    <p>${esc(c.d)}</p>
+    <ul class="pts">${c.b.map((x)=>`<li>${esc(x)}</li>`).join("")}</ul>
+    <ul class="chips">${p.stack.map((s)=>`<li>${esc(s)}</li>`).join("")}</ul>
+    ${links || p.priv ? `<div class="links">${links}${p.priv ? `<span class="privnote">${t.priv}</span>` : ""}</div>` : ""}
+  </article>`;
+}
+function renderFilters() {
+  const names = { all:"f_all", cloud:"f_cloud", data:"f_data", app:"f_app" };
+  $("#filters").innerHTML = Object.keys(names).map((k) =>
+    `<button type="button" data-f="${k}" aria-pressed="${filter===k}">${T[lang][names[k]]}</button>`).join("");
+}
+function renderCards() {
+  $("#feat").innerHTML = P.slice(0, 2).map((p, i) => cardHTML(p, i, true)).join("");
+  $("#grid").innerHTML = P.slice(2).map((p) => cardHTML(p, 0, false)).join("");
+  applyFilter();
+}
+function applyFilter() {
+  document.querySelectorAll("#grid .card").forEach((c) => { c.hidden = filter !== "all" && c.dataset.lane !== filter; });
+}
+function setLang(l) {
+  lang = l;
+  document.documentElement.lang = l;
+  document.querySelectorAll("[data-i]").forEach((el) => { const v = T[l][el.dataset.i]; if (v != null) el.innerHTML = v; });
+  renderFilters(); renderCards();
+  try { localStorage.setItem("lang", l); } catch (e) {}
+}
+$("#lang").addEventListener("click", () => setLang(lang === "en" ? "pt" : "en"));
+$("#filters").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-f]"); if (!b) return;
+  filter = b.dataset.f; renderFilters(); applyFilter();
+});
+document.addEventListener("pointermove", (e) => {
+  const c = e.target.closest && e.target.closest(".card"); if (!c) return;
+  const r = c.getBoundingClientRect();
+  c.style.setProperty("--mx", (e.clientX - r.left) + "px"); c.style.setProperty("--my", (e.clientY - r.top) + "px");
+});
+let saved = null; try { saved = localStorage.getItem("lang"); } catch (e) {}
+setLang(saved || ((navigator.language || "en").toLowerCase().startsWith("pt") ? "pt" : "en"));
+
+/* Hero: a lookup hops across a ring of 32 peers, each hop at most halving the remaining distance (at most 5 hops). */
+(function () {
+  const cv = $("#net"), ctx = cv.getContext("2d"), N = 32;
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W = 0, H = 0, nodes = [], path = [], seg = 0, t = 0, pause = 0, done = [], tick0 = 0;
+  function layout() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2), r = cv.getBoundingClientRect();
+    W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const R = Math.min(W, H) * 0.40;
+    nodes = Array.from({ length: N }, (_, i) => { const a = i / N * Math.PI * 2 - Math.PI / 2; return { x: W/2 + R*Math.cos(a), y: H/2 + R*Math.sin(a) }; });
+  }
+  function pick() {
+    const s = Math.floor(Math.random() * N), d = 1 + Math.floor(Math.random() * (N - 1)), tgt = (s + d) % N;
+    path = [s]; let cur = s;
+    while (cur !== tgt) { const rem = (tgt - cur + N) % N; cur = (cur + (1 << Math.floor(Math.log2(rem)))) % N; path.push(cur); }
+    seg = 0; t = 0; done = [];
+  }
+  function glow(x, y, r, color, alpha) {
+    const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, color.replace("A", alpha)); g.addColorStop(1, color.replace("A", 0));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+  }
+  function draw(time) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1; ctx.strokeStyle = "rgba(255,255,255,.10)"; ctx.beginPath();
+    nodes.forEach((n, i) => { const m = nodes[(i + 1) % N]; ctx.moveTo(n.x, n.y); ctx.lineTo(m.x, m.y); }); ctx.stroke();
+    const grd = ctx.createLinearGradient(0, 0, W, H); grd.addColorStop(0, "#2ee6c5"); grd.addColorStop(1, "#ff8a5b");
+    ctx.strokeStyle = grd; ctx.lineWidth = 2.2; ctx.lineCap = "round";
+    done.forEach(([a, b]) => { ctx.beginPath(); ctx.moveTo(nodes[a].x, nodes[a].y); ctx.lineTo(nodes[b].x, nodes[b].y); ctx.stroke(); });
+    const on = new Set(path);
+    nodes.forEach((n, i) => {
+      ctx.fillStyle = on.has(i) ? "#eef3fa" : "rgba(152,166,187,.8)";
+      ctx.beginPath(); ctx.arc(n.x, n.y, on.has(i) ? 4.2 : 2.6, 0, 7); ctx.fill();
+    });
+    if (path.length) {
+      const s = nodes[path[0]], g = nodes[path[path.length - 1]], pulse = still ? 0 : (Math.sin(time / 380) + 1) / 2;
+      glow(s.x, s.y, 22 + pulse * 6, "rgba(46,230,197,A)", .55); glow(g.x, g.y, 22 + pulse * 6, "rgba(255,138,91,A)", .55);
+      ctx.fillStyle = "#2ee6c5"; ctx.beginPath(); ctx.arc(s.x, s.y, 5.5, 0, 7); ctx.fill();
+      ctx.fillStyle = "#ff8a5b"; ctx.beginPath(); ctx.arc(g.x, g.y, 5.5, 0, 7); ctx.fill();
+      if (!still && seg < path.length - 1) {
+        const a = nodes[path[seg]], b = nodes[path[seg + 1]], x = a.x + (b.x - a.x) * t, y = a.y + (b.y - a.y) * t;
+        glow(x, y, 16, "rgba(255,255,255,A)", .5); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x, y, 4, 0, 7); ctx.fill();
+      }
+    }
+  }
+  function frame(time) {
+    if (!document.hidden) {
+      if (pause > 0) pause--;
+      else if (seg >= path.length - 1) { pick(); pause = 20; }
+      else { t += 0.05; if (t >= 1) { done.push([path[seg], path[seg + 1]]); seg++; t = 0; if (seg >= path.length - 1) pause = 80; } }
+      draw(time);
+    }
+    requestAnimationFrame(frame);
+  }
+  layout(); pick();
+  if (still) { done = path.slice(1).map((n, i) => [path[i], n]); seg = path.length - 1; draw(0); addEventListener("resize", () => { layout(); draw(0); }); return; }
+  addEventListener("resize", layout); requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
